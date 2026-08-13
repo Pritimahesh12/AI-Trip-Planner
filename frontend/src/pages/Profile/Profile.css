@@ -1,0 +1,315 @@
+
+.profile-page-wrapper {
+  min-height: 100vh;
+  background: #fafafa;
+}
+
+.profile-page {
+  min-height: 70vh;
+
+  padding: 80px 6%;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 850px;
+
+  background: white;
+
+  border-radius: 24px;
+
+  padding: 45px;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+
+  gap: 25px;
+
+  padding-bottom: 35px;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #fb923c,
+    #ec4899
+  );
+
+  color: white;
+
+  font-size: 36px;
+  font-weight: 700;
+
+  box-shadow:
+    0 10px 25px rgba(236, 72, 153, 0.2);
+}
+
+
+.profile-header h1 {
+  margin: 0 0 8px;
+
+  font-size: 30px;
+
+  color: #222;
+}
+
+
+.profile-header p {
+  margin: 0;
+
+  color: #494141;
+
+  font-size: 20px;
+}
+
+.profile-section {
+  padding: 30px 0;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.profile-section h2 {
+  margin: 0 0 22px;
+
+  font-size: 24px;
+
+  color: #222;
+}
+
+.profile-info {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+}
+
+.info-item {
+  padding: 20px;
+
+  background: #fafafa;
+
+  border-radius: 14px;
+
+  border: 1px solid #eeeeee;
+}
+
+.info-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 15px;
+
+  color: #696060;
+}
+
+.info-value {
+  display: block;
+
+  font-size: 18px;
+
+  font-weight: 600;
+
+  color: #333;
+
+  word-break: break-word;
+}
+
+.profile-actions {
+  display: flex;
+
+  gap: 15px;
+
+  flex-wrap: wrap;
+}
+
+.profile-action-button {
+  padding: 13px 20px;
+
+  border-radius: 12px;
+
+  border: 1px solid #eeeeee;
+
+  background: white;
+
+  color: #444;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.profile-action-button:hover {
+  transform: translateY(-2px);
+
+  border-color: #ec4899;
+
+  color: #ec4899;
+
+  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.1);
+}
+
+.profile-logout {
+  padding-top: 30px;
+
+  text-align: right;
+}
+
+.logout-profile-button {
+  padding: 12px 25px;
+
+  border-radius: 10px;
+
+  border: none;
+
+  background: #222;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.logout-profile-button:hover {
+  background: #ec4899;
+
+  transform: translateY(-2px);
+}
+
+
+/* ========================================
+   LOGIN MESSAGE
+======================================== */
+
+.profile-login-message {
+  width: 100%;
+  max-width: 500px;
+
+  padding: 50px;
+
+  text-align: center;
+
+  background: white;
+
+  border-radius: 20px;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+}
+
+.profile-login-message h2 {
+  margin-bottom: 10px;
+
+  color: #222;
+}
+
+.profile-login-message p {
+  margin-bottom: 25px;
+
+  color: #777;
+}
+
+.profile-button {
+  padding: 12px 25px;
+
+  border: none;
+
+  border-radius: 25px;
+
+  background: linear-gradient(
+    135deg,
+    #fb923c,
+    #ec4899
+  );
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 700px) {
+
+  .profile-page {
+    padding: 50px 5%;
+  }
+
+  .profile-card {
+    padding: 30px 22px;
+
+    border-radius: 18px;
+  }
+
+  .profile-header {
+    gap: 18px;
+  }
+
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+
+    font-size: 28px;
+  }
+
+  .profile-header h1 {
+    font-size: 24px;
+  }
+
+  .profile-info {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-action-button {
+    width: 100%;
+  }
+
+  .profile-logout {
+    text-align: center;
+  }
+}
