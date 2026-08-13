@@ -12,7 +12,7 @@ const app = express();
 connectDB();
 
 app.use(cors({ origin: [
-    'https://ai-trip-planner-vb7s.vercel.app/', 
+    'https://ai-trip-planner-b5zs.vercel.app', 
     'http://localhost:5173'         
   ],
   credentials: true
