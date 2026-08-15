@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://ai-trip-planner-backend-hsq2.onrender.com/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
 });
 
 axiosInstance.interceptors.request.use((config) => {
