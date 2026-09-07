@@ -5,7 +5,7 @@ import CreateTrip from "./pages/CreateTrip/CreateTrip";
 import MyTrips from "./pages/MyTrips/MyTrips";
 import ViewTrip from "./pages/ViewTrip/ViewTrip";
 import Profile from "./pages/Profile/Profile";
-
+import FloatingChat from "./components/FloatingChat/FloatingChat";
 
 function App() {
   return (
@@ -19,6 +19,7 @@ function App() {
         <Route path="/trips/:id" element={<ViewTrip />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
+      <FloatingChat />
     </BrowserRouter>
   );
 }

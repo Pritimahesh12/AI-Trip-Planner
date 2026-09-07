@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const tripRoutes = require("./routes/tripRoutes");
 const placesRoutes = require("./routes/placeRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/places", placesRoutes);
+app.use("/api/chat", chatRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

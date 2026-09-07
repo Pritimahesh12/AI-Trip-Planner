@@ -113,4 +113,55 @@ Reply conversationally and helpfully, as a travel assistant would. Keep it conci
   return replyText.trim();
 };
 
-module.exports = { generateTripPlan, chatAboutTrip };
+const chatGeneral = async (conversationHistory, newMessage) => {
+  const historyText = conversationHistory
+    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+    .join("\n");
+
+  const prompt = `
+You are the AI assistant for TripAI, a website that helps users plan trips using AI-generated itineraries.
+
+About the website (use this to help users navigate):
+- Users create a new AI-generated trip from the "Plan a Trip" button — they fill in destination, days, budget, and traveler type.
+- A generated trip includes suggested hotels and a day-by-day itinerary with places, timings, and prices.
+- Users can save a trip, and view all saved trips under "Saved Trips" in the navbar.
+- Each saved trip has its own trip-specific chat assistant, for tweaking or asking about that itinerary.
+- Users log in/out via the navbar.
+
+Your job:
+1. Help users navigate the website (e.g. "where do I see my saved trips?", "how do I plan a trip?").
+2. Answer general travel planning questions not tied to any specific saved trip (best time to visit, budget tips, packing advice, etc).
+
+Conversation so far:
+${historyText}
+
+User's new message: ${newMessage}
+
+Reply conversationally in 2-4 sentences unless more detail is truly needed. Do not return JSON, just plain text.
+`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.error?.message || "Gemini API request failed");
+  }
+
+  const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!replyText) {
+    throw new Error("Gemini returned an empty response");
+  }
+
+  return replyText.trim();
+};
+
+module.exports = { generateTripPlan, chatAboutTrip, chatGeneral };
