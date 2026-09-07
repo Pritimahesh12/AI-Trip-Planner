@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import useUserLocation from "../../hooks/useUserLocation";
 import { calculateDistance } from "../../utils/distance";
-import ChatWindow from "../../components/ChatWindow/ChatWindow";
+
 import "./ViewTrip.css";
 
 function ViewTrip() {
@@ -191,10 +191,8 @@ function ViewTrip() {
                 </div>
               </div>
             ))}
-            
-            {/* Chat */}
-            <h3 className="section-title">Ask the Trip Assistant</h3>
-            <ChatWindow tripId={trip._id} initialMessages={trip.messages || []} />
+
+      
           </div>
         )}
       </div>
