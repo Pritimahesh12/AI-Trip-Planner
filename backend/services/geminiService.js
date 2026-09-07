@@ -64,4 +64,53 @@ const generateTripPlan = async ({ destination, days, budget, travelers }) => {
   return parsedResponse;
 };
 
-module.exports = { generateTripPlan };
+const chatAboutTrip = async (trip, conversationHistory, newMessage) => {
+  const historyText = conversationHistory
+    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+    .join("\n");
+
+  const prompt = `
+You are a helpful travel assistant discussing a specific trip with the user.
+
+Trip context:
+- Destination: ${trip.destination}
+- Duration: ${trip.days} days
+- Budget: ${trip.budget}
+- Travelers: ${trip.travelers}
+- Current itinerary: ${JSON.stringify(trip.aiResponse)}
+
+Conversation so far:
+${historyText}
+
+User's new message: ${newMessage}
+
+Reply conversationally and helpfully, as a travel assistant would. Keep it concise (2-4 sentences unless the user asks for detail). Do not return JSON, just plain conversational text.
+`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.error?.message || "Gemini API request failed");
+  }
+
+  const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!replyText) {
+    throw new Error("Gemini returned an empty response");
+  }
+
+  return replyText.trim();
+};
+
+module.exports = { generateTripPlan, chatAboutTrip };

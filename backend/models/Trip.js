@@ -31,6 +31,13 @@ const tripSchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
+     messages: [
+      {
+        role: { type: String, enum: ["user", "assistant"], required: true },
+        content: { type: String, required: true },
+        timestamp: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );

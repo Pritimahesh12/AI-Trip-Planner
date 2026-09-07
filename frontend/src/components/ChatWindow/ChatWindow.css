@@ -1,0 +1,125 @@
+.chatwindow-card {
+  display: flex;
+  flex-direction: column;
+  height: 480px;
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.chatwindow-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.chatwindow-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+}
+
+.chatwindow-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatwindow-empty {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+.chat-bubble-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.chat-bubble-row-user {
+  justify-content: flex-end;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.chat-bubble-assistant {
+  background: #f5f5f5;
+  color: #333;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble-user {
+  background: linear-gradient(135deg, #fb923c, #ec4899);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble-typing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #999;
+}
+
+.chatwindow-error {
+  padding: 0 20px 6px;
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+.chatwindow-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.chatwindow-input-row textarea {
+  flex: 1;
+  resize: none;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+
+.chatwindow-input-row textarea:focus {
+  border-color: #ec4899;
+}
+
+.chatwindow-send-btn {
+  background: linear-gradient(135deg, #fb923c, #ec4899);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.chatwindow-send-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.chatwindow-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

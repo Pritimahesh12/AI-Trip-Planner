@@ -12,6 +12,7 @@ const protect = (req, res, next) => {
       req.user = decoded; // { id: userId }
       return next();
     } catch (error) {
+      console.log("JWT verify error:", error.message); 
       return res.status(401).json({ message: "Not authorized, token invalid" });
     }
   }

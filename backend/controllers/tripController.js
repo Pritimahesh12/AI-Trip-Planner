@@ -1,4 +1,5 @@
 const Trip = require("../models/Trip");
+const { chatAboutTrip } = require("../services/geminiService");
 
 exports.createTrip = async (req, res) => {
   try {
@@ -68,5 +69,38 @@ exports.deleteTrip = async (req, res) => {
     res.status(200).json({ message: "Trip deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
+// @route  POST /api/trips/:id/chat  (protected)
+exports.chatWithTrip = async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ message: "Message is required" });
+    }
+
+    const trip = await Trip.findById(req.params.id);
+
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    if (trip.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    const reply = await chatAboutTrip(trip, trip.messages, message);
+
+    trip.messages.push({ role: "user", content: message });
+    trip.messages.push({ role: "assistant", content: reply });
+    await trip.save();
+
+    res.status(200).json({ reply, messages: trip.messages });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to get chat response", error: error.message });
   }
 };
