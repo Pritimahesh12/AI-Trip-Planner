@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import "./FloatingChat.css";
 
 function FloatingChat() {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -11,6 +13,7 @@ function FloatingChat() {
   const bottomRef = useRef(null);
 
   const isLoggedIn = !!localStorage.getItem("token");
+  const isProfilePage = location.pathname === "/profile"; 
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
