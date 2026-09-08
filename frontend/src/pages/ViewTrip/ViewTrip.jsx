@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import ChatWindow from "../../components/ChatWindow/ChatWindow";
 import useUserLocation from "../../hooks/useUserLocation";
 import { calculateDistance } from "../../utils/distance";
 
@@ -104,6 +105,14 @@ function ViewTrip() {
     fetchAllCoordinates();
   }, [trip]);
 
+  // 👇 नवीन: चॅटसाठी सगळ्या ठिकाणांची नावं एकत्र करणारं variable
+  const allPlaceNames = trip
+    ? [
+        ...trip.aiResponse.hotels.map((h) => h.name),
+        ...trip.aiResponse.itinerary.flatMap((day) => day.places.map((p) => p.name)),
+      ]
+    : [];
+
   return (
     <div className="viewtrip-page">
       <Navbar />
@@ -192,7 +201,14 @@ function ViewTrip() {
               </div>
             ))}
 
-      
+            {}
+            <h3 className="section-title">Ask the Trip Assistant</h3>
+            <ChatWindow
+              tripId={trip._id}
+              initialMessages={trip.messages || []}
+              allPlaceNames={allPlaceNames}
+              destination={trip.destination}
+            />
           </div>
         )}
       </div>

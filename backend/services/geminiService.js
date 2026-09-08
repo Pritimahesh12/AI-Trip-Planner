@@ -64,9 +64,17 @@ const generateTripPlan = async ({ destination, days, budget, travelers }) => {
   return parsedResponse;
 };
 
-const chatAboutTrip = async (trip, conversationHistory, newMessage) => {
+const chatAboutTrip = async (trip, conversationHistory, newMessage, placeContext = {}) => {
   const historyText = conversationHistory
     .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+    .join("\n");
+
+  const placeContextText = Object.entries(placeContext)
+    .map(([name, info]) => {
+      const reviewText = info.reviews?.map((r) => `"${r.text}" (${r.rating}★)`).join("; ") || "No reviews available";
+      const altText = info.alternatives?.map((a) => `${a.name} (${a.rating || "N/A"}★)`).join(", ") || "None found";
+      return `- ${name}: Rating ${info.rating || "N/A"}★ (${info.totalRatings || 0} reviews). Sample review: ${reviewText}. Alternatives nearby: ${altText}`;
+    })
     .join("\n");
 
   const prompt = `
@@ -77,14 +85,17 @@ Trip context:
 - Duration: ${trip.days} days
 - Budget: ${trip.budget}
 - Travelers: ${trip.travelers}
-- Current itinerary: ${JSON.stringify(trip.aiResponse)}
+- Current itinerary (includes time per place): ${JSON.stringify(trip.aiResponse)}
+
+Real Google Places data for places in this itinerary (use this for reviews, ratings, and alternatives — do not invent this info):
+${placeContextText || "No additional place data available."}
 
 Conversation so far:
 ${historyText}
 
 User's new message: ${newMessage}
 
-Reply conversationally and helpfully, as a travel assistant would. Keep it concise (2-4 sentences unless the user asks for detail). Do not return JSON, just plain conversational text.
+Reply conversationally and helpfully. If asked about reviews, ratings, or alternatives, use ONLY the real data given above — if it's not available for a place, say so honestly instead of guessing. Keep it concise (2-4 sentences unless detail is needed). Do not return JSON, just plain text.
 `;
 
   const response = await fetch(
@@ -119,26 +130,26 @@ const chatGeneral = async (conversationHistory, newMessage) => {
     .join("\n");
 
   const prompt = `
-You are the AI assistant for TripAI, a website that helps users plan trips using AI-generated itineraries.
+    You are the AI assistant for TripAI, a website that helps users plan trips using AI-generated itineraries.
 
-About the website (use this to help users navigate):
-- Users create a new AI-generated trip from the "Plan a Trip" button — they fill in destination, days, budget, and traveler type.
-- A generated trip includes suggested hotels and a day-by-day itinerary with places, timings, and prices.
-- Users can save a trip, and view all saved trips under "Saved Trips" in the navbar.
-- Each saved trip has its own trip-specific chat assistant, for tweaking or asking about that itinerary.
-- Users log in/out via the navbar.
+    About the website (use this to help users navigate):
+    - Users create a new AI-generated trip from the "Plan a Trip" button — they fill in destination, days, budget, and traveler type.
+    - A generated trip includes suggested hotels and a day-by-day itinerary with places, timings, and prices.
+    - Users can save a trip, and view all saved trips under "Saved Trips" in the navbar.
+    - Each saved trip has its own trip-specific chat assistant, for tweaking or asking about that itinerary.
+    - Users log in/out via the navbar.
 
-Your job:
-1. Help users navigate the website (e.g. "where do I see my saved trips?", "how do I plan a trip?").
-2. Answer general travel planning questions not tied to any specific saved trip (best time to visit, budget tips, packing advice, etc).
+    Your job:
+    1. Help users navigate the website (e.g. "where do I see my saved trips?", "how do I plan a trip?").
+    2. Answer general travel planning questions not tied to any specific saved trip (best time to visit, budget tips, packing advice, etc).
 
-Conversation so far:
-${historyText}
+    Conversation so far:
+    ${historyText}
 
-User's new message: ${newMessage}
+    User's new message: ${newMessage}
 
-Reply conversationally in 2-4 sentences unless more detail is truly needed. Do not return JSON, just plain text.
-`;
+    Reply conversationally in 2-4 sentences unless more detail is truly needed. Do not return JSON, just plain text.
+    `;
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,

@@ -1,3 +1,4 @@
+const axios = require("axios");
 
 const getPlacePhoto = async (query) => {
   try {
@@ -53,4 +54,66 @@ const getCoordinates = async (address, fallbackQuery) => {
   }
 };
 
-module.exports = { getPlacePhoto, getCoordinates };
+const getPlaceDetails = async (placeName, destination) => {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+
+  const searchRes = await axios.get(
+    "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
+    {
+      params: {
+        input: `${placeName}, ${destination}`,
+        inputtype: "textquery",
+        fields: "place_id,geometry",
+        key: apiKey,
+      },
+    }
+  );
+
+  const candidate = searchRes.data.candidates?.[0];
+  if (!candidate) return { rating: null, reviews: [], alternatives: [] };
+
+  const detailsRes = await axios.get(
+    "https://maps.googleapis.com/maps/api/place/details/json",
+    {
+      params: {
+        place_id: candidate.place_id,
+        fields: "rating,user_ratings_total,reviews,types",
+        key: apiKey,
+      },
+    }
+  );
+
+  const details = detailsRes.data.result || {};
+  const reviews = (details.reviews || [])
+    .slice(0, 2)
+    .map((r) => ({ text: r.text?.slice(0, 200), rating: r.rating }));
+
+  const placeType = details.types?.[0] || "tourist_attraction";
+  const { lat, lng } = candidate.geometry.location;
+
+  const nearbyRes = await axios.get(
+    "https://maps.googleapis.com/maps/api/place/nearbysearch/json",
+    {
+      params: {
+        location: `${lat},${lng}`,
+        radius: 5000,
+        type: placeType,
+        key: apiKey,
+      },
+    }
+  );
+
+  const alternatives = (nearbyRes.data.results || [])
+    .filter((p) => p.name.toLowerCase() !== placeName.toLowerCase())
+    .slice(0, 3)
+    .map((p) => ({ name: p.name, rating: p.rating || null }));
+
+  return {
+    rating: details.rating || null,
+    totalRatings: details.user_ratings_total || 0,
+    reviews,
+    alternatives,
+  };
+};
+
+module.exports = { getPlacePhoto, getCoordinates, getPlaceDetails };

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import "./ChatWindow.css";
 
-function ChatWindow({ tripId, initialMessages = [] }) {
+function ChatWindow({ tripId, initialMessages = [], allPlaceNames = [], destination = "" }) {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,8 +24,26 @@ function ChatWindow({ tripId, initialMessages = [] }) {
     setError("");
 
     try {
+      
+      const mentionedPlaces = allPlaceNames.filter((name) =>
+        trimmed.toLowerCase().includes(name.toLowerCase())
+      );
+
+      const placeContext = {};
+      await Promise.all(
+        mentionedPlaces.map(async (name) => {
+          try {
+            const res = await axiosInstance.get("/places/details", {
+              params: { query: name, destination },
+            });
+            placeContext[name] = res.data;
+          } catch {}
+        })
+      );
+
       const res = await axiosInstance.post(`/trips/${tripId}/chat`, {
         message: trimmed,
+        placeContext,
       });
       setMessages(res.data.messages);
     } catch (err) {

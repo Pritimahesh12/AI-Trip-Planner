@@ -77,23 +77,19 @@ exports.deleteTrip = async (req, res) => {
 // @route  POST /api/trips/:id/chat  (protected)
 exports.chatWithTrip = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, placeContext } = req.body; // placeContext नवीन आहे
 
     if (!message) {
       return res.status(400).json({ message: "Message is required" });
     }
 
     const trip = await Trip.findById(req.params.id);
-
-    if (!trip) {
-      return res.status(404).json({ message: "Trip not found" });
-    }
-
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
     if (trip.userId.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const reply = await chatAboutTrip(trip, trip.messages, message);
+    const reply = await chatAboutTrip(trip, trip.messages, message, placeContext);
 
     trip.messages.push({ role: "user", content: message });
     trip.messages.push({ role: "assistant", content: reply });
