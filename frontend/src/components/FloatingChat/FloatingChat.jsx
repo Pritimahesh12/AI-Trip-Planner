@@ -15,12 +15,13 @@ function FloatingChat() {
   const isLoggedIn = !!localStorage.getItem("token");
   const isProfilePage = location.pathname === "/profile"; 
 
+
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading, open]);
 
-  if (!isLoggedIn) return null;
-
+  if (!isLoggedIn || isProfilePage) return null;
+  
   const sendMessage = async () => {
     const trimmed = input.trim();
     if (!trimmed || loading) return;
